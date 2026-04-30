@@ -1,0 +1,13 @@
+admin
+login
+dashboard
+api
+uploads
+images
+backup.zip
+robots.txt
+config
+user
+account
+cart
+checkout
