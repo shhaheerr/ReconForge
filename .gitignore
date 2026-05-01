@@ -1,4 +1,4 @@
 __pycache__/
 *.pyc
-reconforge_results.txt
-test.txt
+*.txt
+.env

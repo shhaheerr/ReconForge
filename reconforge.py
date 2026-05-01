@@ -7,21 +7,19 @@ from passive import get_subdomains
 from resolver import resolve
 from http_probe import check_http
 from brute import brute_subdomains
+from dirscan import run_dirscan
 
 init(autoreset=True)
 
-BANNER = Fore.CYAN + "ReconForge v1.3 | Fast Recon Mode" + Style.RESET_ALL
+BANNER = Fore.CYAN + "ReconForge v1.5 | Recon + DirScan PRO" + Style.RESET_ALL
 
 
-# -------------------------
-# CATEGORY TAGGING
-# -------------------------
 def categorize(sub):
     s = sub.lower()
 
     if any(x in s for x in ["auth", "login", "sso"]):
         return Fore.YELLOW + "[AUTH]"
-    elif any(x in s for x in ["api"]):
+    elif "api" in s:
         return Fore.BLUE + "[API]"
     elif any(x in s for x in ["shop", "store"]):
         return Fore.GREEN + "[SHOP]"
@@ -31,113 +29,92 @@ def categorize(sub):
         return Fore.WHITE + "[WEB]"
 
 
-# -------------------------
-# CLEAN FILTER (domain only)
-# -------------------------
 def clean_results(subs, domain):
     return [s for s in subs if s.endswith("." + domain)]
 
 
-# -------------------------
-# SMART FILTER (remove noise)
-# -------------------------
 def smart_filter(subs):
     blacklist = ["corp", "sandbox", "test", "internal"]
-
-    filtered = []
-
-    for sub in subs:
-        if not any(b in sub.lower() for b in blacklist):
-            filtered.append(sub)
-
-    return filtered
+    return [s for s in subs if not any(b in s for b in blacklist)]
 
 
-# -------------------------
-# MAIN ENGINE
-# -------------------------
-def run(domain, silent=False, output=None, threads=50):
-    if not silent:
-        print(BANNER)
-        print(Fore.CYAN + f"\n[+] Target: {domain}")
-
-    # PASSIVE
-    if not silent:
-        print(Fore.YELLOW + "\n[+] Passive enumeration...")
-    passive_subs = get_subdomains(domain)
-
-    # BRUTE
-    if not silent:
-        print(Fore.YELLOW + "[+] Brute force...")
-    brute_subs = brute_subdomains(domain)
-
-    # MERGE
-    candidates = list(set(passive_subs + brute_subs))
-
-    if not silent:
-        print(Fore.GREEN + f"[+] Total candidates: {len(candidates)}")
-
-    # DNS
-    if not silent:
-        print(Fore.YELLOW + "\n[+] Resolving DNS...")
-    live = resolve(candidates)
-
-    if not silent:
-        print(Fore.GREEN + f"[+] DNS LIVE: {len(live)}")
-
-    # HTTP
-    if not silent:
-        print(Fore.YELLOW + "\n[+] HTTP probing (fast)...")
-    http_results = check_http(live, threads=threads)
-
-    # FILTERING
-    http_results = clean_results(http_results, domain)
-    http_results = smart_filter(http_results)
-
-    # OUTPUT
-    if not silent:
-        print(Fore.CYAN + "\n[+] FINAL RESULTS:\n")
-
-    final = []
-
-    for host in http_results:
-        if silent:
-            print(host)
-        else:
-            print(f"{categorize(host)} {host}")
-
-        final.append(host)
-
-    # SAVE
-    outfile = output if output else "reconforge_results.txt"
-
-    with open(outfile, "w") as f:
-        for line in final:
-            f.write(line + "\n")
-
-    if not silent:
-        print(Fore.GREEN + f"\n[+] Saved {len(final)} results → {outfile}")
-
-
-# -------------------------
-# CLI
-# -------------------------
 def main():
-    parser = argparse.ArgumentParser(description="ReconForge v1.3")
+    parser = argparse.ArgumentParser(description="ReconForge Tool")
 
-    parser.add_argument("domain", help="Target domain")
-    parser.add_argument("--silent", action="store_true", help="Clean output")
-    parser.add_argument("-o", "--output", help="Save output file")
-    parser.add_argument("--threads", type=int, default=50, help="Threads")
+    parser.add_argument("target", help="Domain or URL")
+    parser.add_argument("--silent", action="store_true")
+    parser.add_argument("-o", "--output")
+    parser.add_argument("--threads", type=int, default=20)
+    parser.add_argument("--dir", action="store_true")
 
     args = parser.parse_args()
+    target = args.target
 
-    run(
-        domain=args.domain,
-        silent=args.silent,
-        output=args.output,
-        threads=args.threads
-    )
+    print(BANNER)
+    print(f"\n[+] Target: {target}\n")
+
+    is_url = target.startswith("http://") or target.startswith("https://")
+
+    web = []
+
+    # DOMAIN MODE
+    if not is_url:
+        print("[+] Passive enumeration...")
+        passive = get_subdomains(target)
+
+        print("[+] Brute force...")
+        brute = brute_subdomains(target)
+
+        subs = list(set(passive + brute))
+        subs = clean_results(subs, target)
+        subs = smart_filter(subs)
+
+        print(f"[+] Total candidates: {len(subs)}\n")
+
+        print("[+] Resolving DNS...")
+        alive = resolve(subs)
+
+        print(f"[+] DNS LIVE: {len(alive)}\n")
+
+        print("[+] HTTP probing...")
+        web = check_http(alive, threads=args.threads)
+
+    # URL/IP MODE
+    else:
+        web = [target]
+
+
+    print("\n[+] FINAL RESULTS:\n")
+
+    results = []
+
+    for sub in web:
+        if args.silent:
+            print(sub)
+        else:
+            print(f"{categorize(sub)} {sub}")
+        results.append(sub)
+
+    outfile = args.output if args.output else "reconforge_results.txt"
+
+    with open(outfile, "w") as f:
+        f.write("\n".join(results))
+
+    print(f"\n[+] Saved {len(results)} results → {outfile}")
+
+    # DIRSCAN
+    if args.dir:
+        print("\n[+] Directory scanning...\n")
+
+        targets = web if is_url else [f"http://{h}" for h in web]
+
+        for url in targets:
+            print(f"\n[+] {url}")
+
+            dirs = run_dirscan(url)
+
+            for code, path in dirs:
+                print(f"[{code}] {path}")
 
 
 if __name__ == "__main__":
