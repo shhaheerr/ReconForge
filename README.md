@@ -8,14 +8,14 @@ Fast Recon Tool for **Subdomain Enumeration + Directory Scanning**
 
 ## ⚡ Overview
 
-ReconForge is a lightweight reconnaissance tool designed for:
+ReconForge is a lightweight reconnaissance tool built for:
 
 * Subdomain enumeration (passive + brute-force)
 * DNS resolution
 * HTTP probing
 * Basic directory scanning
 
-It focuses on **speed, simplicity, and clean output** rather than heavy automation.
+It is designed for **speed, simplicity, and clean output**, making it useful for quick recon tasks and automation.
 
 ---
 
@@ -27,7 +27,7 @@ It focuses on **speed, simplicity, and clean output** rather than heavy automati
 * ⚡ Fast HTTP probing
 * 📂 Optional directory scanning (`--dir`)
 * 🎯 Categorized output (WEB, API, AUTH, SHOP, CDN)
-* 🤫 Silent mode for scripting
+* 🤫 Silent mode (script-friendly)
 
 ---
 
@@ -44,7 +44,7 @@ cd ReconForge
 
 ### 2. Install dependencies
 
-#### ✅ Option A (Recommended - Kali Linux)
+#### ✅ Option A (Kali Linux - Recommended)
 
 ```bash
 sudo apt install python3-colorama
@@ -52,7 +52,7 @@ sudo apt install python3-colorama
 
 ---
 
-#### ✅ Option B (Virtual Environment - All Systems)
+#### ✅ Option B (Virtual Environment - Recommended for all systems)
 
 ```bash
 python3 -m venv venv
@@ -62,7 +62,7 @@ pip install -r requirements.txt
 
 ---
 
-#### ⚠️ Option C (Not Recommended)
+#### ⚠️ Option C (Not recommended)
 
 ```bash
 pip3 install -r requirements.txt --break-system-packages
@@ -80,7 +80,7 @@ python3 reconforge.py target.com
 
 ---
 
-### Silent mode (for automation)
+### Silent mode
 
 ```bash
 python3 reconforge.py target.com --silent
@@ -112,7 +112,7 @@ python3 reconforge.py target.com --dir
 
 ---
 
-### Scan IP / URL directly
+### Scan IP / URL
 
 ```bash
 python3 reconforge.py http://target-ip --dir
@@ -122,7 +122,7 @@ python3 reconforge.py http://target-ip --dir
 
 ## 🖥 CLI Usage (Optional)
 
-Run ReconForge like a real command:
+Run ReconForge like a command:
 
 ```bash
 chmod +x reconforge.py
@@ -137,9 +137,15 @@ reconforge target.com
 
 ---
 
-## 📸 Screenshot
+## 📸 Screenshots
 
-![ReconForge Output](screenshot.png)
+### 🔹 Recon Mode
+
+![Recon Output](screenshot1.png)
+
+### 🔹 Directory Scan Mode
+
+![DirScan Output](screenshot2.png)
 
 ---
 
@@ -147,13 +153,11 @@ reconforge target.com
 
 ### 📂 Directory Scanning
 
-* Uses **basic wordlist brute-force**
+* Uses basic wordlist brute-force
 * May produce **false positives**
 * Some servers return `200 OK` for all paths
 
-👉 Example: Large platforms (Google, Microsoft) may respond to many paths even if they are not valid.
-
-👉 For accurate fuzzing, use:
+👉 For accurate fuzzing, consider tools like:
 
 * ffuf
 * dirsearch
@@ -162,20 +166,15 @@ reconforge target.com
 
 ### 🌐 Passive Enumeration
 
-* Relies mainly on **crt.sh**
-* Results may vary depending on network availability
+* Primarily uses crt.sh
+* Results may vary depending on availability
 
 ---
 
-### ⚡ Not a Full Recon Framework
+### ⚡ Scope
 
-ReconForge is **not intended to replace** advanced tools like:
-
-* subfinder
-* amass
-* ffuf
-
-It is designed as a **fast and simple recon utility**
+ReconForge is **not a full recon framework**.
+It is designed for **fast and simple recon tasks**, not deep scanning.
 
 ---
 
@@ -206,8 +205,8 @@ dirs.txt           → Directory wordlist
 
 ## ⚠️ Disclaimer
 
-This tool is for **educational and authorized security testing only**.
-The author is **not responsible for any misuse**.
+This tool is intended for **educational purposes and authorized testing only**.
+The author is not responsible for misuse.
 
 ---
 
@@ -228,4 +227,4 @@ If you find this tool useful, consider giving it a ⭐
 * Reduce directory scan false positives
 * Add more passive sources
 * Improve performance (async scanning)
-* Smarter filtering and categorization
+* Smarter filtering and detection
