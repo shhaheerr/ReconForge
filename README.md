@@ -1,6 +1,8 @@
 # 🚀 ReconForge
 
-**Fast Recon Tool — Subdomain Enumeration + Directory Scanner**
+**Version: v1.5**
+
+Fast Recon Tool for **Subdomain Enumeration + Directory Scanning**
 
 ---
 
@@ -13,7 +15,7 @@ ReconForge is a lightweight reconnaissance tool designed for:
 * HTTP probing
 * Basic directory scanning
 
-It is built for **speed and simplicity**, not full-scale fuzzing.
+It focuses on **speed, simplicity, and clean output** rather than heavy automation.
 
 ---
 
@@ -24,7 +26,7 @@ It is built for **speed and simplicity**, not full-scale fuzzing.
 * 🌐 DNS resolution filtering
 * ⚡ Fast HTTP probing
 * 📂 Optional directory scanning (`--dir`)
-* 🎯 Clean categorized output (WEB, API, AUTH, etc.)
+* 🎯 Categorized output (WEB, API, AUTH, SHOP, CDN)
 * 🤫 Silent mode for scripting
 
 ---
@@ -99,14 +101,14 @@ python3 reconforge.py http://target-ip --dir
 
 ## 🖥 CLI Usage (Optional)
 
-You can run ReconForge like a real CLI tool:
+Run ReconForge like a real command:
 
 ```bash
 chmod +x reconforge.py
 cp reconforge.py ~/bin/reconforge
 ```
 
-Then use:
+Then:
 
 ```bash
 reconforge target.com
@@ -114,20 +116,17 @@ reconforge target.com
 
 ---
 
-## ⚠️ Limitations (Important)
+## ⚠️ Limitations
 
 ### 📂 Directory Scanning
 
-* Uses a **basic wordlist approach**
-* Does **not perform advanced filtering**
-* May produce **false positives** (especially on large platforms)
+* Uses **basic wordlist brute-force**
+* May produce **false positives**
+* Some servers return `200 OK` for all paths
 
-Example:
+👉 Example: Large platforms (Google, Microsoft) may respond to many paths even if they are not valid.
 
-* Some endpoints may return `200 OK` even if not valid
-* Platforms like Google/Microsoft often respond to many paths
-
-👉 For accurate fuzzing, use dedicated tools like:
+👉 For accurate fuzzing, use:
 
 * ffuf
 * dirsearch
@@ -137,19 +136,19 @@ Example:
 ### 🌐 Passive Enumeration
 
 * Relies mainly on **crt.sh**
-* If network issues occur, results may be limited
+* Results may vary depending on network availability
 
 ---
 
 ### ⚡ Not a Full Recon Framework
 
-ReconForge is **not meant to replace** tools like:
+ReconForge is **not intended to replace** advanced tools like:
 
 * subfinder
 * amass
 * ffuf
 
-It is designed as a **fast, simple recon utility**
+It is designed as a **fast and simple recon utility**
 
 ---
 
@@ -178,6 +177,13 @@ dirs.txt           → Directory wordlist
 
 ---
 
+## ⚠️ Disclaimer
+
+This tool is for **educational and authorized security testing only**.
+The author is **not responsible for any misuse**.
+
+---
+
 ## 👤 Author
 
 GitHub: https://github.com/shhaheerr
@@ -192,7 +198,7 @@ If you find this tool useful, consider giving it a ⭐
 
 ## 🚧 Future Improvements
 
-* Better directory filtering (reduce false positives)
-* More passive sources
-* Async performance improvements
-* Smarter categorization
+* Reduce directory scan false positives
+* Add more passive sources
+* Improve performance (async scanning)
+* Smarter filtering and categorization
