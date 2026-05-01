@@ -40,11 +40,32 @@ git clone https://github.com/shhaheerr/ReconForge.git
 cd ReconForge
 ```
 
+---
+
 ### 2. Install dependencies
+
+#### ✅ Option A (Recommended - Kali Linux)
 
 ```bash
 sudo apt install python3-colorama
-pip3 install -r requirements.txt
+```
+
+---
+
+#### ✅ Option B (Virtual Environment - All Systems)
+
+```bash
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
+
+---
+
+#### ⚠️ Option C (Not Recommended)
+
+```bash
+pip3 install -r requirements.txt --break-system-packages
 ```
 
 ---
@@ -113,6 +134,12 @@ Then:
 ```bash
 reconforge target.com
 ```
+
+---
+
+## 📸 Screenshot
+
+![ReconForge Output](screenshot.png)
 
 ---
 
